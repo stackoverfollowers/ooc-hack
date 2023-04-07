@@ -6,7 +6,6 @@ import {
 	UnstyledButton,
 	createStyles,
 } from '@mantine/core';
-import Filters from './Filters';
 import { useState } from 'react';
 import { useClickOutside } from '@mantine/hooks';
 
@@ -15,6 +14,7 @@ const useStyles = createStyles(theme => ({
 		padding: '0 12px',
 		border: '1px solid transparent',
 		minWidth: '185px',
+		height: '32px',
 	},
 	input: { height: '32px', minHeight: '32px' },
 }));
@@ -31,7 +31,7 @@ const BoardHeader = () => {
 					<TextInput
 						ref={ref}
 						classNames={{ input: classes.input }}
-						value="BOARDNAME"
+						value="РЕЕСТР №1"
 					/>
 				</FocusTrap>
 			) : (
@@ -40,12 +40,10 @@ const BoardHeader = () => {
 					className={classes.inputBtn}
 				>
 					<Text size="sm" fw={500}>
-						BOARDNAME
+						РЕЕСТР №1
 					</Text>
 				</UnstyledButton>
 			)}
-
-			<Filters />
 		</Group>
 	);
 };

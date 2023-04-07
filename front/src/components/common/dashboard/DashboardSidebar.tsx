@@ -1,7 +1,7 @@
+import React from 'react';
+import { Navbar } from '@mantine/core';
 import {
-	Button,
 	Checkbox,
-	Popover,
 	Stack,
 	Text,
 	UnstyledButton,
@@ -46,25 +46,17 @@ const useStyles = createStyles(theme => ({
 	redLabel: { backgroundColor: theme.colors.red[5], opacity: 0.8 },
 }));
 
-const Filters = () => {
-	const [showMoreDates, setShowMoreDates] = useState(false);
+const DashboardSidebar = ({ opened }: { opened: boolean }) => {
 	const { classes, cx } = useStyles();
+	const [showMoreDates, setShowMoreDates] = useState(false);
 
 	const handlePopoverClose = () => {
 		setShowMoreDates(false);
 	};
 
 	return (
-		<Popover
-			width={384}
-			position="bottom"
-			shadow="md"
-			onClose={handlePopoverClose}
-		>
-			<Popover.Target>
-				<Button h={32}>Фильтр</Button>
-			</Popover.Target>
-			<Popover.Dropdown>
+		<Navbar hidden={!opened} p="md" hiddenBreakpoint="sm" width={{ sm: 300 }}>
+			<Navbar.Section grow mt="xs">
 				<Stack spacing="xl">
 					<div>
 						<Text size="sm" mb="xs">
@@ -146,9 +138,9 @@ const Filters = () => {
 						</Stack>
 					</div>
 				</Stack>
-			</Popover.Dropdown>
-		</Popover>
+			</Navbar.Section>
+		</Navbar>
 	);
 };
 
-export default Filters;
+export default DashboardSidebar;

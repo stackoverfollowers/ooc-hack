@@ -82,7 +82,7 @@ const useStyles = createStyles(theme => ({
 	hiddenDesktop: { [theme.fn.largerThan('sm')]: { display: 'none' } },
 }));
 
-type Navigation = {
+export type Navigation = {
 	href: string;
 	label: string;
 }[];

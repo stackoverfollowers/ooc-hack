@@ -40,6 +40,7 @@ const useStyles = createStyles(theme => ({
 
 interface BoardCardProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+// eslint-disable-next-line react/display-name
 const BoardCard = forwardRef<HTMLDivElement, BoardCardProps>((props, ref) => {
 	const { classes } = useStyles();
 

@@ -76,7 +76,7 @@ const UserMenu = () => {
 			},
 			{
 				label: 'Обзор',
-				href: `/u/${user?.id}/boards`,
+				href: `/board`,
 				icon: FiGrid,
 				component: Link,
 			},
@@ -84,7 +84,7 @@ const UserMenu = () => {
 		[
 			{
 				label: 'Настройки',
-				href: `/u/${user?.id}`,
+				href: `/profile`,
 				icon: FiSettings,
 				component: Link,
 			},
