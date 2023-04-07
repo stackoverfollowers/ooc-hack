@@ -69,11 +69,18 @@ const UserMenu = () => {
 	const navigation: Navigation = [
 		[
 			{
+				label: 'Профиль',
+				href: `/profile`,
+				icon: FiSettings,
+				component: Link,
+			},
+			{
 				label: 'Главная',
 				href: '/',
 				icon: FiHome,
 				component: Link,
 			},
+
 			{
 				label: 'Обзор',
 				href: `/board`,
@@ -82,12 +89,7 @@ const UserMenu = () => {
 			},
 		],
 		[
-			{
-				label: 'Настройки',
-				href: `/profile`,
-				icon: FiSettings,
-				component: Link,
-			},
+			// menu
 		],
 	];
 

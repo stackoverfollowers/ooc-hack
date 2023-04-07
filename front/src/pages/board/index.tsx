@@ -9,16 +9,11 @@ const Board = dynamic(() => import('@/components/board/Board'), {
 	loading: () => null,
 });
 
-const BoardHeader = dynamic(() => import('@/components/board/BoardHeader'), {
-	loading: () => null,
-});
-
 const useStyles = createStyles(theme => ({
 	content: {
 		display: 'flex',
 		flexDirection: 'column',
 		height: '100%',
-		position: 'relative',
 		gap: '10px',
 	},
 }));
@@ -31,10 +26,7 @@ const BoardPage = () => {
 			<Head>
 				<title>BoardName – stackoverfollowers</title>
 			</Head>
-			<div className={classes.content}>
-				<BoardHeader />
-				<Board />
-			</div>
+			<Board />
 		</>
 	);
 };

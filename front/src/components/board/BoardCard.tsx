@@ -1,4 +1,4 @@
-import { Avatar, Paper, createStyles } from '@mantine/core';
+import { Avatar, Card, Paper, createStyles } from '@mantine/core';
 import { forwardRef } from 'react';
 import { FiEye } from 'react-icons/fi';
 import { HiBars3BottomLeft } from 'react-icons/hi2';
@@ -45,9 +45,9 @@ const BoardCard = forwardRef<HTMLDivElement, BoardCardProps>((props, ref) => {
 	const { classes } = useStyles();
 
 	return (
-		<Paper {...props} className={classes.details} ref={ref}>
+		<Card {...props} className={classes.details} ref={ref}>
 			<div className={classes.labels}></div>
-			<span className={classes.title}>Title 1</span>
+			<span className={classes.title}>Объект</span>
 			<div className={classes.footer}>
 				<div className={classes.badges}>
 					<FiEye />
@@ -59,7 +59,7 @@ const BoardCard = forwardRef<HTMLDivElement, BoardCardProps>((props, ref) => {
 					</Avatar>
 				</div>
 			</div>
-		</Paper>
+		</Card>
 	);
 });
 
