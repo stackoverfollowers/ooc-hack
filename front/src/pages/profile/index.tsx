@@ -2,7 +2,7 @@ import Layout from '@/components/common/Layout';
 import Head from 'next/head';
 import { ReactElement } from 'react';
 
-const UserProfile = () => {
+const ProfilePage = () => {
 	return (
 		<>
 			<Head>
@@ -13,10 +13,10 @@ const UserProfile = () => {
 	);
 };
 
-UserProfile.getLayout = function getLayout(page: ReactElement) {
+ProfilePage.getLayout = function getLayout(page: ReactElement) {
 	return <Layout>{page}</Layout>;
 };
 
-UserProfile.auth = true;
+ProfilePage.auth = true;
 
-export default UserProfile;
+export default ProfilePage;
