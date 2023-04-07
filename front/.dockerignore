@@ -1,0 +1,7 @@
+src/Dockerfile
+src/.dockerignore
+src/node_modules
+src/npm-debug.log
+src/README.md
+src/.next
+src/.git

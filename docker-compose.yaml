@@ -1,0 +1,29 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:14
+    restart: on-failure
+    ports:
+      - "5432:${POSTGRES_PORT:-5432}"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+
+  # back:
+  #   restart: on-failure
+  #   ports:
+  #     - "${APP_PORT:-3000}:${APP_PORT:-3000}"
+  #   environment:
+  #     POSTGRES_USER: ${POSTGRES_USER:-user}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+  #     POSTGRES_DB: ${POSTGRES_DB:-app}
+  #     POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+
+  #     STATIC_PATH: ${STATIC_PATH:-/static}
+
+  #     SECRET_KEY: ${SECRET_KEY:-secret_key}
+
+  #     GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-secret_client_id}
+  #     GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-secret_client_secret}

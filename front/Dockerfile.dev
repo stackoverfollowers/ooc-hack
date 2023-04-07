@@ -1,0 +1,11 @@
+FROM node:18-alpine
+
+WORKDIR /usr/src/app/client
+
+COPY ./src .
+
+RUN yarn global add pnpm && pnpm i
+
+ENV NEXT_PUBLIC_SERVER_URL=<server_url>
+
+CMD ["pnpm", "dev"]
