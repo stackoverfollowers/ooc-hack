@@ -1,0 +1,51 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:14
+    restart: on-failure
+    ports:
+      - "5433:${POSTGRES_PORT:-5432}"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+
+  redis:
+    image: redis
+    restart: on-failure
+    command: "redis-server --requirepass ${REDIS_PASSWORD}"
+    ports:
+      - "6379:${REDIS_PORT}"
+    environment:
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-password}
+
+  back:
+     restart: on-failure
+     depends_on:
+       - db
+       - redis
+     command: uvicorn app:app --host 0.0.0.0 --port ${BACK_PORT:-3000} --reload
+     build:
+       context: ./back/
+       dockerfile: Dockerfile.dev
+     env_file:
+       - .env
+     ports:
+       - "${APP_PORT:-3000}:${APP_PORT:-3000}"
+     environment:
+       POSTGRES_USER: ${POSTGRES_USER:-user}
+       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+       POSTGRES_DB: ${POSTGRES_DB:-app}
+       POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+
+       STATIC_PATH: ${STATIC_PATH:-/static}
+
+       SECRET_KEY: ${SECRET_KEY:-secret_key}
+
+       REDIS_HOST: ${REDIS_HOST:-redis}
+       REDIS_PORT: ${REDIS_PORT:-6379}
+       REDIS_PASSWORD: ${REDIS_PASSWORD:-password}
+     volumes:
+       - ./back/src/:/src
