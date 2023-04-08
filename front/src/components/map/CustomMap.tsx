@@ -11,7 +11,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 const useStyles = createStyles({
 	container: {
 		width: '100%',
-		height: '20rem',
+		height: 'fit-content',
 		overflow: 'hidden',
 	},
 });
@@ -47,7 +47,7 @@ export default function CustomMap({
 	);
 
 	return (
-		<Container className={classes.container}>
+		<Container p={0} className={classes.container}>
 			<YMaps>
 				<Map
 					defaultState={{ center: position, zoom: zoom }}
