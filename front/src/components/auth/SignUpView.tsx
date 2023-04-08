@@ -14,9 +14,7 @@ import { useLoginMutation } from '@/redux/services/auth';
 import { useState } from 'react';
 
 const schema = z.object({
-	username: z.string().min(2, {
-		message: 'Имя пользователя должно состоять как минимум из 2 символов',
-	}),
+	email: z.coerce.string().email().min(5, { message: 'Invalid email' }),
 	password: z
 		.string()
 		.min(4, { message: 'Пароль должен состоять как минимум из 4 символов' }),
@@ -30,7 +28,7 @@ const SignUpView = () => {
 	const [error, setError] = useState('');
 
 	const form = useForm({
-		initialValues: { username: '', password: '' },
+		initialValues: { email: '', password: '' },
 		validate: zodResolver(schema),
 	});
 
@@ -49,8 +47,9 @@ const SignUpView = () => {
 			<Stack>
 				<TextInput
 					required
+					type="email"
 					placeholder="Имя пользователя"
-					{...form.getInputProps('username')}
+					{...form.getInputProps('email')}
 				/>
 
 				<PasswordInput

@@ -112,7 +112,7 @@ const UserMenu = () => {
 							<>
 								<Avatar src="/logo.svg" alt="logo" radius="xl" size={20} />
 								<Text weight={500} size="sm" mr={3}>
-									{user.username}
+									{user.email}
 								</Text>
 							</>
 						) : (

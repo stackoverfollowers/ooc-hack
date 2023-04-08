@@ -66,13 +66,6 @@ const useStyles = createStyles(theme => ({
 		height: '28px',
 		minWidth: '28px',
 	},
-
-	// checklist: {
-	// 	display: 'flex',
-	// 	justifyContent: 'center',
-	// 	alignItems: 'center',
-	// },
-
 	footer: {},
 }));
 
@@ -94,7 +87,7 @@ const BoardCard = forwardRef<HTMLDivElement, BoardCardProps>((props, ref) => {
 				color={theme.colors[color][6]}
 				className={classes.badge}
 				styles={{
-					overlay: { '&:hover': { backgroundColor: theme.colors[color][9] } },
+					overlay: { '&:hover': { backgroundColor: theme.colors[color][7] } },
 				}}
 				onClick={() => dispatch(setLabelsExpanded())}
 				radius="xs"
