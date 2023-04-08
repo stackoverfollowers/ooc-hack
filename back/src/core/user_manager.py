@@ -10,11 +10,11 @@ from fastapi_users.db import SQLAlchemyUserDatabase
 from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.auth import auth_backend, google_oauth_client
+from core.auth import auth_backend
 from core.config import get_settings
 from core.schemas import BaseModel
 from db.engine import get_async_session
-from db.models import OAuthAccount, User
+from db.models import User
 
 AUTH_TAG = "auth"
 USERS_TAG = "users"
@@ -113,25 +113,4 @@ def include_user_routers(app: FastAPI):
         fastapi_users.get_users_router(UserRead, UserUpdate),
         prefix="/users",
         tags=[USERS_TAG],
-    )
-
-    # TODO fix choose host in prod / local environments
-    app.include_router(
-        fastapi_users.get_oauth_router(
-            google_oauth_client,
-            auth_backend,
-            state_secret=settings.SECRET_KEY,
-            redirect_url="https://vk.com",
-            associate_by_email=True,
-            is_verified_by_default=True,
-        ),
-        prefix="/auth/google",
-        tags=[AUTH_TAG],
-    )
-    app.include_router(
-        fastapi_users.get_oauth_associate_router(
-            google_oauth_client, UserRead, settings.SECRET_KEY
-        ),
-        prefix="/auth/associate/google",
-        tags=[AUTH_TAG],
     )

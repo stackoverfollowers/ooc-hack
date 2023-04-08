@@ -1,69 +1,211 @@
 from datetime import datetime
+from typing import Any
 
-from fastapi_users.db import SQLAlchemyBaseOAuthAccountTable, SQLAlchemyBaseUserTable
-from fastapi_users_db_sqlalchemy.access_token import SQLAlchemyBaseAccessTokenTable
-from slugify import slugify
-from sqlalchemy import Boolean, DateTime, String, event, select
-from sqlalchemy.orm import Mapped, Session, mapped_column, relationship
+from fastapi_users.db import SQLAlchemyBaseUserTable
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, func
+from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.orm import Mapped, declared_attr, mapped_column
+from sqlalchemy_utils import ChoiceType
 
 from db.base import Base
-from db.mixins import IdMixin, SlugMixin, TimestampMixin, UserIdMixin
-
-
-class OAuthAccount(
-    IdMixin, TimestampMixin, UserIdMixin, SQLAlchemyBaseOAuthAccountTable[int], Base
-):
-    pass
+from db.mixins import IdMixin, TimestampMixin, UserIdMixin
 
 
 class User(IdMixin, TimestampMixin, SQLAlchemyBaseUserTable[int], Base):
-    oauth_accounts: Mapped[list[OAuthAccount]] = relationship(
-        "OAuthAccount",
-        lazy="joined",
+    ADMIN = "ADMIN"
+    SPECIALIST = "SPECIALIST"
+    TYPES = (
+        (ADMIN, ADMIN),
+        (SPECIALIST, SPECIALIST),
+    )
+
+    type: Mapped[str] = mapped_column(
+        ChoiceType(TYPES, impl=String()), default=SPECIALIST, nullable=False
     )
 
     def __repr__(self):
         return f"<User {self.email}>"
 
 
-class AccessToken(UserIdMixin, SQLAlchemyBaseAccessTokenTable[int], Base):
-    pass
+class WorkGroup(IdMixin, Base):
+    name: Mapped[str] = mapped_column(String(512), index=True, nullable=False)
 
 
-class Post(TimestampMixin, IdMixin, UserIdMixin, SlugMixin, Base):
-    title: Mapped[str] = mapped_column(String(512), index=True, nullable=False)
-    description: Mapped[str] = mapped_column(String(512), nullable=False, default="")
-    is_published: Mapped[bool] = mapped_column(
-        Boolean, default=False, nullable=False, index=True
+class WorkGroupUser(Base, IdMixin, UserIdMixin, TimestampMixin):
+    @declared_attr
+    def work_group_id(cls) -> Mapped[int]:
+        return mapped_column(
+            Integer, ForeignKey("work_group.id", ondelete="cascade"), nullable=False
+        )
+
+
+class TargetType(Base, IdMixin):
+    name: Mapped[str] = mapped_column(String(512), index=True, nullable=False)
+
+
+class WorkGroupTargetType(Base, IdMixin):
+    @declared_attr
+    def work_group_id(cls) -> Mapped[int]:
+        return mapped_column(
+            Integer, ForeignKey("work_group.id", ondelete="cascade"), nullable=False
+        )
+
+    @declared_attr
+    def target_type_id(cls) -> Mapped[int]:
+        return mapped_column(
+            Integer, ForeignKey("target_type.id", ondelete="cascade"), nullable=False
+        )
+
+
+class SectionField(Base, IdMixin):
+    name: Mapped[str] = mapped_column(String(512), index=True, nullable=False)
+
+
+class Field(Base, IdMixin):
+    INTEGER, FLOAT, STRING, ARRAY = "INTEGER", "FLOAT", "STRING", "ARRAY"
+    TYPES = (
+        (INTEGER, INTEGER),
+        (FLOAT, FLOAT),
+        (STRING, STRING),
+        (ARRAY, ARRAY),
     )
-    published_at: Mapped[datetime] = mapped_column(
-        DateTime, default=None, nullable=True
+
+    @declared_attr
+    def type_id(cls) -> Mapped[int]:
+        return mapped_column(
+            Integer, ForeignKey("target_type.id", ondelete="cascade"), nullable=False
+        )
+
+    @declared_attr
+    def section_id(cls) -> Mapped[int]:
+        return mapped_column(
+            Integer, ForeignKey("section_field.id", ondelete="cascade"), nullable=False
+        )
+
+    name: Mapped[str] = mapped_column(String(512), unique=True, index=True)
+    is_required: Mapped[bool] = mapped_column(Boolean, default=False)
+    field_type: Mapped[int] = mapped_column(
+        ChoiceType(TYPES, impl=Integer), default=STRING, index=True
     )
-    body: Mapped[str] = mapped_column(String, nullable=False, default="")
-
-    def __repr__(self) -> str:
-        return f"<Post {self.title}>"
+    default_value: Mapped[Any] = mapped_column(JSON, default="")
 
 
-@event.listens_for(Session, "before_commit")
-def receive_before_commit(session: Session):
-    new_items = [item for item in session.new if isinstance(item, SlugMixin)]
-    dirty_items = [item for item in session.dirty if isinstance(item, SlugMixin)]
-    all_items = new_items + dirty_items
-    if not all_items:
-        return
-    slugs_map = {}
-    for item in all_items:
-        table = item.__table__
-        if table not in slugs_map:
-            slugs_map[table] = {c[0] for c in session.execute(select(table.c.slug))}
-        item_slug = item.slug or ""
-        title = getattr(item, item.slug_target_column)
-        slug = slugify(title, max_length=120)
-        if not item_slug.startswith(slug):
-            i = 1
-            while slug in slugs_map[table]:
-                slug = slugify(title, max_length=120) + "-" + str(i)
-                i += 1
-            item.slug = slug
-            slugs_map[table].add(slug)
+class Status(Base, IdMixin):
+    name: Mapped[str] = mapped_column(String(512), index=True, nullable=False)
+
+
+class Target(TimestampMixin, UserIdMixin, Base, IdMixin):
+    @declared_attr
+    def target_type_id(cls) -> Mapped[int]:
+        return mapped_column(
+            Integer, ForeignKey("target_type.id", ondelete="cascade"), nullable=False
+        )
+
+    @declared_attr
+    def status_id(cls) -> Mapped[int]:
+        return mapped_column(
+            Integer, ForeignKey("status.id", ondelete="cascade"), nullable=False
+        )
+
+    address: Mapped[str] = mapped_column(String(1024), default="", nullable=False)
+    area: Mapped[str] = mapped_column(String(256), default="", nullable=False)  # округ
+    district: Mapped[str] = mapped_column(
+        String(256), default="", nullable=False
+    )  # район
+    square: Mapped[float] = mapped_column(Float, default=0, nullable=False)
+
+
+class TargetField(Base, IdMixin):
+    @declared_attr
+    def field_id(cls) -> Mapped[int]:
+        return mapped_column(
+            Integer, ForeignKey("field.id", ondelete="cascade"), nullable=False
+        )
+
+    @declared_attr
+    def target_id(cls) -> Mapped[int]:
+        return mapped_column(
+            Integer, ForeignKey("target.id", ondelete="cascade"), nullable=False
+        )
+
+    value: Mapped[str] = mapped_column(JSON, default="", nullable=False)
+
+
+class Task(IdMixin, Base):
+    UNKNOWN, IN_PROGRESS, DONE, FAILED, CANCELLED = (
+        "UNKNOWN",
+        "IN_PROGRESS",
+        "DONE",
+        "FAILED",
+        "CANCELLED",
+    )
+    STATUSES = (
+        (UNKNOWN, UNKNOWN),
+        (IN_PROGRESS, IN_PROGRESS),
+        (DONE, DONE),
+        (FAILED, FAILED),
+        (CANCELLED, CANCELLED),
+    )
+
+    @declared_attr
+    def author_id(cls) -> Mapped[int]:
+        return mapped_column(
+            Integer,
+            ForeignKey("user.id", ondelete="cascade"),
+            nullable=False,
+        )
+
+    @declared_attr
+    def executor_id(cls) -> Mapped[int]:
+        return mapped_column(
+            Integer,
+            ForeignKey("user.id", ondelete="cascade"),
+            nullable=False,
+        )
+
+    @declared_attr
+    def target_id(cls) -> Mapped[int]:
+        return mapped_column(
+            Integer,
+            ForeignKey("target.id", ondelete="cascade"),
+            nullable=False,
+        )
+
+    name: Mapped[str] = mapped_column(String(512), nullable=False, index=True)
+    description: Mapped[str] = mapped_column(String(2048), nullable=False, default="")
+    assign_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    deadline: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    status: Mapped[str] = mapped_column(
+        ChoiceType(STATUSES, impl=String()), default=UNKNOWN
+    )
+
+
+class Content(Base, IdMixin):
+    IMAGE = "IMAGE"
+    VIDEO = "VIDEO"
+    DOCUMENT = "DOCUMENT"
+    TYPES = (
+        (IMAGE, IMAGE),
+        (VIDEO, VIDEO),
+        (DOCUMENT, DOCUMENT),
+    )
+
+    @declared_attr
+    def target_id(cls) -> Mapped[int]:
+        return mapped_column(
+            Integer,
+            ForeignKey("target.id", ondelete="cascade"),
+            nullable=True,
+        )
+
+    @declared_attr
+    def task_id(cls) -> Mapped[int]:
+        return mapped_column(
+            Integer,
+            ForeignKey("task.id", ondelete="cascade"),
+            nullable=True,
+        )
+
+    name: Mapped[str] = mapped_column(String(1024), nullable=False)
+    path: Mapped[str] = mapped_column(String(2048), nullable=False)
+    type: Mapped[str] = mapped_column(ChoiceType(TYPES), default=IMAGE)

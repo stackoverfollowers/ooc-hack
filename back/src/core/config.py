@@ -11,9 +11,9 @@ class AppSettings(BaseSettings):
     PASSWORD_TOKEN_SECRET: str = Field(default="pwd_token_secret")
     VERIFICATION_TOKEN_SECRET: str = Field(default="verification_token_secret")
 
-    GOOGLE_CLIENT_ID: str
-    GOOGLE_CLIENT_SECRET: str
-    SECRET_KEY: str
+    JWT_SECRET_KEY: str = Field(default="jwt_secret_keys")
+
+    TOKEN_LIFETIME_SECONDS: int = 60 * 60 * 24
 
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
