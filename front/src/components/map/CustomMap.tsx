@@ -1,4 +1,10 @@
-import { YMaps, Map, Placemark } from '@pbe/react-yandex-maps';
+import {
+	YMaps,
+	Map,
+	Placemark,
+	TypeSelector,
+	ZoomControl,
+} from '@pbe/react-yandex-maps';
 import { Container, createStyles } from '@mantine/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -13,8 +19,8 @@ const useStyles = createStyles({
 export type Position = [number, number];
 
 export type MapProps = {
-	position: Position;
-	zoom: number;
+	position?: Position;
+	zoom?: number;
 	setPosition: (position: Position) => void;
 };
 export default function CustomMap({
@@ -48,6 +54,8 @@ export default function CustomMap({
 					instanceRef={mapRef}
 				>
 					<Placemark geometry={currentPosition} />
+					<TypeSelector options={{ float: 'right' }} />
+					<ZoomControl options={{ float: 'right' }} />
 				</Map>
 			</YMaps>
 		</Container>

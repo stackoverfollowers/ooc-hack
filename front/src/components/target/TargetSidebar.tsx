@@ -5,8 +5,8 @@ import {
 	FiLayers,
 	FiPaperclip,
 	FiTag,
-	FiUser,
 } from 'react-icons/fi';
+import TargetAddMembers from './TargetAddMember';
 
 const useStyles = createStyles(theme => {
 	const BREAKPOINT = theme.fn.smallerThan('sm');
@@ -35,14 +35,8 @@ const TargetSidebar = () => {
 				Добавить в объект
 			</Text>
 			<Stack>
-				<Button
-					variant="light"
-					color="gray"
-					leftIcon={<FiUser />}
-					styles={{ inner: { justifyContent: 'flex-start' } }}
-				>
-					Участники
-				</Button>
+				<TargetAddMembers />
+
 				<Button
 					variant="light"
 					color="gray"
@@ -57,7 +51,7 @@ const TargetSidebar = () => {
 					leftIcon={<FiCheckSquare />}
 					styles={{ inner: { justifyContent: 'flex-start' } }}
 				>
-					Чек-лист
+					Задачи
 				</Button>
 				<Button
 					variant="light"

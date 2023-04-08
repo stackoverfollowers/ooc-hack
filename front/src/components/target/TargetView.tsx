@@ -22,7 +22,8 @@ import TargetSidebar from './TargetSidebar';
 import { useState } from 'react';
 import { useClickOutside } from '@mantine/hooks';
 import Image from 'next/image';
-import CustomMap from '../map/Map';
+import CustomMap from '../map/CustomMap';
+import TargetTasklist from './TargetTasklist';
 
 const useStyles = createStyles(theme => {
 	const BREAKPOINT = theme.fn.smallerThan('sm');
@@ -96,7 +97,7 @@ const TargetView = () => {
 	return (
 		<Paper radius="sm">
 			<div className={classes.wrapper}>
-				<Stack className={classes.form}>
+				<Stack className={classes.form} spacing={36}>
 					<form onSubmit={event => event.preventDefault()}>
 						<div className={classes.title}>
 							<FiCreditCard size={20} transform="rotate(180)" />
@@ -253,6 +254,8 @@ const TargetView = () => {
 							</Group>
 						</form>
 					)}
+
+					<TargetTasklist />
 				</Stack>
 				<TargetSidebar />
 			</div>

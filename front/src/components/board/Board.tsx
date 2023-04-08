@@ -96,7 +96,7 @@ const Board = () => {
 					data={options}
 				/>
 
-				<Popover width={300} trapFocus position="bottom" withArrow shadow="md">
+				<Popover width={300} trapFocus position="bottom-end" shadow="md">
 					<Popover.Target>
 						<Button>Добавить объект</Button>
 					</Popover.Target>
