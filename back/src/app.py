@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi_pagination import add_pagination
 from starlette.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from core.config import get_settings
 from core.user_manager import include_user_routers
@@ -26,6 +27,7 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def on_start():
+    return
     await create_db_and_tables()
 
 
@@ -33,3 +35,5 @@ include_user_routers(app)
 app.include_router(api_router)
 
 add_pagination(app)
+
+app.mount(str(settings.STATIC_PATH), StaticFiles(directory=settings.STATIC_PATH), name="static")
