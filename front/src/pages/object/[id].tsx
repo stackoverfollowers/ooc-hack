@@ -5,7 +5,6 @@ import {useRouter} from "next/router";
 import {useGetObjectByIdQuery} from "@/redux/services/objects";
 import Object from "@/components/object/Object";
 
-
 const ObjectPage = () => {
     const { query: { id }} = useRouter()
     const { data } = useGetObjectByIdQuery(id)
