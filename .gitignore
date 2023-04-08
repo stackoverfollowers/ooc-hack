@@ -2,3 +2,5 @@
 .vscode/
 .venv/
 front/.env
+
+node_modules/

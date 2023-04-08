@@ -66,7 +66,7 @@ const LoginView = () => {
 
 				<Group spacing={5}>
 					<Text color="dimmed" size="sm">
-						У вас ещё нет аккаунт?
+						У вас ещё нет аккаунта?
 					</Text>
 					<Text
 						component={Link}

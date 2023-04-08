@@ -7,6 +7,9 @@ import {
 	FiTag,
 } from 'react-icons/fi';
 import TargetAddMembers from './TargetAddMember';
+import TargetAddCustomFields from "@/components/target/TargerAddCustomFields";
+import TargetAddDate from "@/components/target/TargetAddDate";
+import TargetAddLocation from "@/components/target/TargetAddLocation";
 
 const useStyles = createStyles(theme => {
 	const BREAKPOINT = theme.fn.smallerThan('sm');
@@ -53,14 +56,8 @@ const TargetSidebar = () => {
 				>
 					Задачи
 				</Button>
-				<Button
-					variant="light"
-					color="gray"
-					leftIcon={<FiClock />}
-					styles={{ inner: { justifyContent: 'flex-start' } }}
-				>
-					Даты
-				</Button>
+				<TargetAddDate />
+				<TargetAddLocation />
 
 				<FileButton onChange={() => {}} multiple>
 					{props => (
@@ -75,14 +72,7 @@ const TargetSidebar = () => {
 						</Button>
 					)}
 				</FileButton>
-				<Button
-					variant="light"
-					color="gray"
-					leftIcon={<FiLayers />}
-					styles={{ inner: { justifyContent: 'flex-start' } }}
-				>
-					Поля пользователя
-				</Button>
+				<TargetAddCustomFields />
 			</Stack>
 		</div>
 	);
