@@ -19,5 +19,9 @@ class ContentOut(BaseModel):
         orm_mode = True
 
 
+class FilteredContents(BaseModel):
+    items: list[ContentOut]
+
+
 class ContentPut(BaseModel):
     name: str

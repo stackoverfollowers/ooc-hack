@@ -10,8 +10,8 @@ from starlette.responses import FileResponse
 from core.config import get_settings
 from db.engine import get_async_session
 from db.models import Content
-from dependencies import get_content_by_id, get_video
-from schemas.contents import ContentTypeEnum, ContentOut, ContentPut
+from dependencies import get_content_by_id, get_video, get_target_contacts_by_id
+from schemas.contents import ContentTypeEnum, ContentOut, ContentPut, FilteredContents
 from utils import range_requests_response
 
 router = APIRouter()
@@ -57,6 +57,11 @@ async def download_file_by_id(content: Content = Depends(get_content_by_id)):
 @router.get("/{content_id}/data", response_model=ContentOut)
 async def get_content_data(content: Content = Depends(get_content_by_id)):
     return content
+
+
+@router.get("/target/{target_id}/", response_model=FilteredContents)
+async def get_target_contents(contents: list[Content] = Depends(get_target_contacts_by_id)):
+    return contents
 
 
 @router.get("/{content_id}/stream")
