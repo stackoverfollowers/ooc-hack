@@ -16,6 +16,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const useStyles = createStyles(theme => ({
+	root: {
+		display: 'flex',
+		flexDirection: 'column',
+		minHeight: '100vh',
+		background:
+			theme.colorScheme === 'dark'
+				? theme.colors.dark[8]
+				: theme.colors.gray[0],
+	},
 	link: {
 		display: 'block',
 		lineHeight: 1,
@@ -57,8 +66,13 @@ const useStyles = createStyles(theme => ({
 	hiddenDesktop: { [theme.fn.largerThan('sm')]: { display: 'none' } },
 }));
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
-	const theme = useMantineTheme();
+export default function DashboardLayout({
+	children,
+	sidebar = false,
+}: {
+	children: ReactNode;
+	sidebar?: boolean;
+}) {
 	const router = useRouter();
 	const { classes, cx } = useStyles();
 	const [opened, setOpened] = useState(false);
@@ -81,39 +95,30 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 	));
 
 	return (
-		<AppShell
-			styles={{
-				main: {
-					background:
-						theme.colorScheme === 'dark'
-							? theme.colors.dark[8]
-							: theme.colors.gray[0],
-				},
-			}}
-			navbarOffsetBreakpoint="sm"
-			asideOffsetBreakpoint="sm"
-			navbar={<DashboardSidebar opened={opened} />}
-			header={
-				<Header height={60} p="md" zIndex={50}>
-					<Group position="apart">
-						<Group>
-							<Burger
-								opened={opened}
-								onClick={() => setOpened(o => !o)}
-								size="sm"
-								className={classes.hiddenDesktop}
-							/>
-							<Group className={classes.hiddenMobile}>{items}</Group>
-						</Group>
-						<Group>
-							<ThemeSwitcher />
-							<UserMenu />
-						</Group>
+		<div className={classes.root}>
+			<Header height={60} p="md" zIndex={50}>
+				<Group position="apart">
+					<Group>
+						<Burger
+							opened={opened}
+							onClick={() => setOpened(o => !o)}
+							size="sm"
+							className={classes.hiddenDesktop}
+						/>
+						<Group className={classes.hiddenMobile}>{items}</Group>
 					</Group>
-				</Header>
-			}
-		>
-			{children}
-		</AppShell>
+					<Group>
+						<ThemeSwitcher />
+						<UserMenu />
+					</Group>
+				</Group>
+			</Header>
+			<div style={{ display: 'flex', flex: 1 }}>
+				{sidebar && <DashboardSidebar opened={opened} />}
+				{!opened && (
+					<main style={{ padding: '1rem', flex: 1 }}>{children}</main>
+				)}
+			</div>
+		</div>
 	);
 }

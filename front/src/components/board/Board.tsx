@@ -9,6 +9,8 @@ import {
 import BoardCard from './BoardCard';
 import { FiGrid, FiList, FiSearch } from 'react-icons/fi';
 import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { setBoardView } from '@/redux/slices/boardSlice';
 
 const useStyles = createStyles(theme => ({
 	board: {
@@ -47,7 +49,8 @@ const useStyles = createStyles(theme => ({
 
 const Board = () => {
 	const { classes } = useStyles();
-	const [value, setValue] = useState('grid');
+	const dispatch = useAppDispatch();
+	const boardTheme = useAppSelector(state => state.board.theme);
 
 	const options = [
 		{
@@ -79,14 +82,16 @@ const Board = () => {
 				/>
 				<SegmentedControl
 					className={classes.segments}
-					value={value}
-					onChange={value => setValue(value)}
+					value={boardTheme.view}
+					onChange={value =>
+						dispatch(setBoardView(value as typeof boardTheme['view']))
+					}
 					data={options}
 				/>
 
 				<Button>Добавить объект</Button>
 			</div>
-			{value === 'grid' ? (
+			{boardTheme.view === 'grid' ? (
 				<Grid>
 					{[...Array(6)].map((_, i) => (
 						<Grid.Col key={i} sm={6} md={3} lg={3}>
@@ -95,7 +100,7 @@ const Board = () => {
 					))}
 				</Grid>
 			) : (
-				<Stack spacing={0}>
+				<Stack>
 					{[...Array(9)].map((_, i) => (
 						<BoardCard key={i} />
 					))}

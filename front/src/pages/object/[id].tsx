@@ -18,9 +18,9 @@ const ObjectPage = () => {
 }
 
 ObjectPage.getLayout = function getLayout(page: ReactElement) {
-    return <DashboardLayout>{page}</DashboardLayout>;
+	return <DashboardLayout>{page}</DashboardLayout>;
 };
 
 ObjectPage.auth = true;
 
-export default ObjectPage
+export default ObjectPage;
