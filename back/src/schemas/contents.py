@@ -17,3 +17,7 @@ class ContentOut(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class ContentPut(BaseModel):
+    name: str

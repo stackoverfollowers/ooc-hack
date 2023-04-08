@@ -1,16 +1,17 @@
+import os.path
 import shutil
 import uuid
 from typing import Annotated
 import mimetypes
 
-from fastapi import APIRouter, File, UploadFile, Body, Depends, Request
+from fastapi import APIRouter, File, UploadFile, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import FileResponse
 from core.config import get_settings
 from db.engine import get_async_session
 from db.models import Content
 from dependencies import get_content_by_id, get_video
-from schemas.contents import ContentTypeEnum, ContentOut
+from schemas.contents import ContentTypeEnum, ContentOut, ContentPut
 from utils import range_requests_response
 
 router = APIRouter()
@@ -33,6 +34,7 @@ async def upload_content(
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
+    # noinspection PyArgumentList
     content = Content(
         name=file.filename,
         path=str(file_path),
@@ -47,9 +49,14 @@ async def upload_content(
 
 
 @router.get("/{content_id}")
-async def download_file_by_id(content=Depends(get_content_by_id)):
+async def download_file_by_id(content: Content = Depends(get_content_by_id)):
     content_type = mimetypes.guess_type(content.path)[0]
     return FileResponse(content.path, status_code=200, filename=content.name, media_type=content_type)
+
+
+@router.get("/{content_id}/data", response_model=ContentOut)
+async def get_content_data(content: Content = Depends(get_content_by_id)):
+    return content
 
 
 @router.get("/{content_id}/stream")
@@ -60,3 +67,26 @@ async def get_video(request: Request, video: Content = Depends(get_video)):
         file_path=video.path,
         content_type=content_type,
     )
+
+
+@router.delete("/{content_id}")
+async def delete_content(
+        content: Content = Depends(get_content_by_id),
+        session: AsyncSession = Depends(get_async_session)
+):
+    await session.delete(content)
+    if os.path.exists(path=content.path):
+        os.remove(path=content.path)
+    return {"status": "ok", "message": "Content deleted"}
+
+
+@router.put("/{content_id}", response_model=ContentOut)
+async def edit_content(
+        file_data: ContentPut,
+        content: Content = Depends(get_content_by_id),
+        session: AsyncSession = Depends(get_async_session),
+):
+    content.update_from_dict(**file_data.dict())
+    session.add(content)
+    await session.commit()
+    return content

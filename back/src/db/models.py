@@ -209,3 +209,8 @@ class Content(Base, IdMixin):
     name: Mapped[str] = mapped_column(String(1024), nullable=False)
     path: Mapped[str] = mapped_column(String(2048), nullable=False)
     type: Mapped[str] = mapped_column(ChoiceType(TYPES), default=IMAGE)
+
+    def update_from_dict(self, **kwargs):
+        for field, value in kwargs.items():
+            if hasattr(self, field):
+                setattr(self, field, value)
