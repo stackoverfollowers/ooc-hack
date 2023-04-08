@@ -5,7 +5,7 @@ from sqlalchemy import join
 
 from core.user_manager import fastapi_users
 from db.engine import get_async_session
-from db.models import Content, Target
+from db.models import Content, Target, Task
 
 current_active_user = fastapi_users.current_user(active=True)
 current_super_user = fastapi_users.current_user(superuser=True)
@@ -24,6 +24,19 @@ async def get_target_by_id(
             detail="Target was not found"
         )
     return target
+
+
+async def get_task_by_id(
+        task_id: int,
+        session: AsyncSession = Depends(get_async_session)
+) -> Task:
+    task = await session.get(Task, task_id)
+    if task is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Task was not found"
+        )
+    return task
 
 
 async def get_content_by_id(
@@ -49,6 +62,20 @@ async def get_target_contacts_by_id(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Content for given target id was not found"
+        )
+    return contents
+
+
+async def get_task_contacts_by_id(
+        task: Task = Depends(get_task_by_id),
+        session: AsyncSession = Depends(get_async_session)
+) -> list[Content]:
+    q = select(Content).filter_by(task=task)
+    contents = (await session.execute(q)).scalars().all()
+    if contents is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Content for given task id was not found"
         )
     return contents
 
