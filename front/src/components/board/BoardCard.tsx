@@ -17,6 +17,7 @@ import {
 	useMantineTheme,
 } from '@mantine/core';
 import Image from 'next/image';
+import Link from 'next/link';
 import { forwardRef } from 'react';
 import { FiCheckSquare, FiEye, FiPaperclip } from 'react-icons/fi';
 import { HiBars3BottomLeft } from 'react-icons/hi2';
@@ -99,14 +100,14 @@ const BoardCard = forwardRef<HTMLDivElement, BoardCardProps>((props, ref) => {
 	return (
 		<Card withBorder radius="md" className={classes.card} {...props} p={0}>
 			<div className={classes.imageSection}>
-				<a href="#">
+				<Link href={`/target/${1}`}>
 					<Image
 						className={classes.image}
 						src="/background.jpg"
 						alt="cover"
 						fill
 					/>
-				</a>
+				</Link>
 			</div>
 			<Badge
 				className={classes.rating}

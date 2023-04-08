@@ -1,9 +1,16 @@
 import {
 	Button,
+	Card,
+	CloseButton,
+	Divider,
 	Grid,
+	Group,
 	Input,
+	Popover,
 	SegmentedControl,
 	Stack,
+	Text,
+	TextInput,
 	createStyles,
 } from '@mantine/core';
 import BoardCard from './BoardCard';
@@ -89,7 +96,27 @@ const Board = () => {
 					data={options}
 				/>
 
-				<Button>Добавить объект</Button>
+				<Popover width={300} trapFocus position="bottom" withArrow shadow="md">
+					<Popover.Target>
+						<Button>Добавить объект</Button>
+					</Popover.Target>
+					<Popover.Dropdown
+						sx={theme => ({
+							background:
+								theme.colorScheme === 'dark'
+									? theme.colors.dark[7]
+									: theme.white,
+						})}
+					>
+						<Group position="apart">
+							<Text>Добавление нового объекта</Text>
+							<CloseButton />
+						</Group>
+						<Divider my={8} />
+						<TextInput label="Название" placeholder="Объект №1" />
+						<Button mt={8}>Добавить</Button>
+					</Popover.Dropdown>
+				</Popover>
 			</div>
 			{boardTheme.view === 'grid' ? (
 				<Grid>
