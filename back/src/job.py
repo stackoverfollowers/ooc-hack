@@ -8,6 +8,7 @@ from sqlalchemy.future import select
 from db.engine import get_async_session
 from db.models import Content
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -22,6 +23,7 @@ async def check_content():
             if os.path.exists(content.path):
                 os.remove(content.path)
             await session.delete(content)
+            await session.commit()
             logger.info(f"Content {content.id} with name {content.name} deleted")
 
 
