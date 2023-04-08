@@ -88,7 +88,7 @@ const Board = () => {
 			</div>
 			{value === 'grid' ? (
 				<Grid>
-					{[...Array(9)].map((_, i) => (
+					{[...Array(6)].map((_, i) => (
 						<Grid.Col key={i} sm={6} md={3} lg={3}>
 							<BoardCard />
 						</Grid.Col>

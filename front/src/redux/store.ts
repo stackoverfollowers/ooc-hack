@@ -1,5 +1,6 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
+import boardReducer from './slices/boardSlice';
 import { api } from './services/api';
 import { persistStore } from 'redux-persist';
 
@@ -18,12 +19,13 @@ import storage from './storage';
 const reducers = combineReducers({
 	[api.reducerPath]: api.reducer,
 	auth: authReducer,
+	board: boardReducer,
 });
 
 const persistConfig = {
 	key: 'root',
 	storage: storage,
-	whitelist: ['auth'],
+	whitelist: ['auth', 'board'],
 };
 
 const persistedReducer = persistReducer(persistConfig, reducers);
