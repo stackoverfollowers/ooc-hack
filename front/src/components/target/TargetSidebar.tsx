@@ -3,13 +3,14 @@ import {
 	FiCheckSquare,
 	FiClock,
 	FiLayers,
+	FiMapPin,
 	FiPaperclip,
 	FiTag,
 } from 'react-icons/fi';
 import TargetAddMembers from './TargetAddMember';
-import TargetAddCustomFields from "@/components/target/TargerAddCustomFields";
-import TargetAddDate from "@/components/target/TargetAddDate";
-import TargetAddLocation from "@/components/target/TargetAddLocation";
+import TargetAddCustomFields from '@/components/target/TargerAddCustomFields';
+import TargetAddDate from '@/components/target/TargetAddDate';
+import TargetAddLocation from '@/components/target/TargetAddLocation';
 
 const useStyles = createStyles(theme => {
 	const BREAKPOINT = theme.fn.smallerThan('sm');
@@ -48,6 +49,7 @@ const TargetSidebar = () => {
 				>
 					Метки
 				</Button>
+
 				<Button
 					variant="light"
 					color="gray"

@@ -25,15 +25,12 @@ const useStyles = createStyles(theme => ({
 		display: 'flex',
 		alignItems: 'center',
 		gap: 16,
-		marginBottom: `12px`,
-		[theme.fn.smallerThan('sm')]: {
-			marginBottom: theme.spacing.md,
-		},
 	},
 	button: {
 		display: 'flex',
 		alignItems: 'center',
 		flex: 1,
+		width: '100%',
 		borderRadius: theme.radius.sm,
 		padding: 8,
 		backgroundColor:
@@ -44,6 +41,17 @@ const useStyles = createStyles(theme => ({
 					? theme.colors.dark[5]
 					: theme.colors.gray[1],
 		},
+	},
+	task: {
+		paddingLeft: 40,
+		position: 'relative',
+	},
+	checkbox: {
+		position: 'absolute',
+		left: 0,
+		top: 0,
+		textAlign: 'center',
+		margin: '6px',
 	},
 }));
 
@@ -56,12 +64,8 @@ const Task = ({ onEdit }: TaskProps) => {
 	const [collapse, setCollapse] = useState(false);
 
 	return (
-		<Group spacing={8}>
-			<Checkbox
-				onChange={() => {}}
-				style={collapse ? { alignSelf: 'flex-start' } : {}}
-				styles={{ input: { cursor: 'pointer' } }}
-			/>
+		<Group spacing={8} className={classes.task}>
+			<Checkbox onChange={() => {}} className={classes.checkbox} />
 			{collapse ? (
 				<Stack spacing={8} style={{ flex: 1 }}>
 					<FocusTrap>
@@ -79,10 +83,10 @@ const Task = ({ onEdit }: TaskProps) => {
 						</Group>
 
 						<Group spacing={8}>
-							<Button leftIcon={<FiUser />} color="dark" variant="subtle">
+							<Button leftIcon={<FiUser />} color="gray" variant="light">
 								Назначить
 							</Button>
-							<Button leftIcon={<FiClock />} color="dark" variant="subtle">
+							<Button leftIcon={<FiClock />} color="gray" variant="light">
 								Срок
 							</Button>
 						</Group>
@@ -149,10 +153,10 @@ const TargetTasklist = () => {
 							</Group>
 
 							<Group spacing={8}>
-								<Button leftIcon={<FiUser />} color="dark" variant="subtle">
+								<Button leftIcon={<FiUser />} color="gray" variant="light">
 									Назначить
 								</Button>
-								<Button leftIcon={<FiClock />} color="dark" variant="subtle">
+								<Button leftIcon={<FiClock />} color="gray" variant="light">
 									Срок
 								</Button>
 							</Group>
