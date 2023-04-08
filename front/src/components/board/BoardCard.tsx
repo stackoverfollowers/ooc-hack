@@ -18,7 +18,7 @@ import {
 } from '@mantine/core';
 import Image from 'next/image';
 import { forwardRef } from 'react';
-import { FiEye, FiPaperclip } from 'react-icons/fi';
+import { FiCheckSquare, FiEye, FiPaperclip } from 'react-icons/fi';
 import { HiBars3BottomLeft } from 'react-icons/hi2';
 
 const useStyles = createStyles(theme => ({
@@ -53,17 +53,25 @@ const useStyles = createStyles(theme => ({
 	},
 
 	action: {
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: '4px',
+		padding: '6px',
+		gap: '2px',
 		backgroundColor:
 			theme.colorScheme === 'dark'
 				? theme.colors.dark[6]
 				: theme.colors.gray[0],
-		...theme.fn.hover({
-			backgroundColor:
-				theme.colorScheme === 'dark'
-					? theme.colors.dark[5]
-					: theme.colors.gray[1],
-		}),
+		height: '28px',
+		minWidth: '28px',
 	},
+
+	// checklist: {
+	// 	display: 'flex',
+	// 	justifyContent: 'center',
+	// 	alignItems: 'center',
+	// },
 
 	footer: {},
 }));
@@ -72,10 +80,9 @@ interface BoardCardProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 // eslint-disable-next-line react/display-name
 const BoardCard = forwardRef<HTMLDivElement, BoardCardProps>((props, ref) => {
-	const { classes, cx } = useStyles();
+	const { classes } = useStyles();
 
 	const dispatch = useAppDispatch();
-
 	const boardTheme = useAppSelector(state => state.board.theme);
 
 	const theme = useMantineTheme();
@@ -97,7 +104,7 @@ const BoardCard = forwardRef<HTMLDivElement, BoardCardProps>((props, ref) => {
 		));
 
 	return (
-		<Card withBorder radius="md" className={cx(classes.card)} {...props} p={0}>
+		<Card withBorder radius="md" className={classes.card} {...props} p={0}>
 			<div className={classes.imageSection}>
 				<a href="#">
 					<Image
@@ -128,23 +135,6 @@ const BoardCard = forwardRef<HTMLDivElement, BoardCardProps>((props, ref) => {
 					</Group>
 				</div>
 
-				{/* <div>
-					<Text c="dimmed" fz="sm">
-						Задач выполнено:{' '}
-						<Text
-							span
-							fw={500}
-							sx={theme => ({
-								color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-							})}
-						>
-							23/36
-						</Text>
-					</Text>
-
-					<Progress value={(23 / 36) * 100} mt={5} />
-				</div> */}
-
 				<Text fz="sm" color="dimmed" lineClamp={4}>
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
 					eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -152,15 +142,19 @@ const BoardCard = forwardRef<HTMLDivElement, BoardCardProps>((props, ref) => {
 
 				<Group position="apart" className={classes.footer}>
 					<Group spacing={8} mr={0}>
-						<ActionIcon className={classes.action}>
+						<div className={classes.action}>
 							<FiEye size={16} />
-						</ActionIcon>
-						<ActionIcon className={classes.action}>
+						</div>
+						<div className={classes.action}>
+							<FiCheckSquare size={16} />
+							<Text size="xs">2/3</Text>
+						</div>
+						<div className={classes.action}>
 							<HiBars3BottomLeft size={16} />
-						</ActionIcon>
-						<ActionIcon className={classes.action}>
+						</div>
+						<div className={classes.action}>
 							<FiPaperclip size={16} />
-						</ActionIcon>
+						</div>
 					</Group>
 
 					<Center>

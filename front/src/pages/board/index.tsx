@@ -32,7 +32,7 @@ const BoardPage = () => {
 };
 
 BoardPage.getLayout = function getLayout(page: ReactElement) {
-	return <DashboardLayout>{page}</DashboardLayout>;
+	return <DashboardLayout sidebar>{page}</DashboardLayout>;
 };
 
 BoardPage.auth = true;
