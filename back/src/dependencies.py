@@ -5,7 +5,6 @@ from core.user_manager import fastapi_users
 from db.engine import get_async_session
 from db.models import Content
 
-current_user = fastapi_users.current_user()
 current_active_user = fastapi_users.current_user(active=True)
 current_super_user = fastapi_users.current_user(superuser=True)
 

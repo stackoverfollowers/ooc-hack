@@ -12,11 +12,11 @@ from starlette.responses import FileResponse
 from core.config import get_settings
 from db.engine import get_async_session
 from db.models import Content
-from dependencies import current_user, get_content_by_id, get_video
+from dependencies import current_active_user, get_content_by_id, get_video
 from routers.utils import range_requests_response
 from schemas.contents import ContentOut, ContentPut, ContentTypeEnum
 
-router = APIRouter(dependencies=[Depends(current_user)])
+router = APIRouter(dependencies=[Depends(current_active_user)])
 
 settings = get_settings()
 
