@@ -19,7 +19,7 @@ async def create_target(target_in: TargetCreate,
                         session: AsyncSession = Depends(get_async_session),
                         user: User = Depends(current_active_user)
                         ) -> TargetSchema:
-    return await target_crud.create_with_user(db=session, obj_in=target_in, user=user)
+    return await target_crud.create_with_user(db=session, target_form=target_in, user=user)
 
 
 @router.get("/", response_model=List[TargetSchema])

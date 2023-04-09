@@ -1,7 +1,7 @@
 from typing import List
 
 from core.schemas import BaseModel
-from schemas.field import FieldSchema, FieldCreate
+from schemas.field import FieldSchema, FieldCreate, FieldCreateTarget
 
 
 class SectionBase(BaseModel):
@@ -10,7 +10,7 @@ class SectionBase(BaseModel):
 
 
 class SectionCreate(SectionBase):
-    fields: List[FieldCreate]
+    fields: List[FieldCreateTarget]
 
 
 class SectionUpdate(SectionBase):
