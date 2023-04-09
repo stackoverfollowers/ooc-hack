@@ -4,7 +4,7 @@ services:
     image: postgres:14
     restart: on-failure
     ports:
-      - "5433:${POSTGRES_PORT:-5432}"
+      - "5432:${POSTGRES_PORT:-5432}"
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
@@ -14,9 +14,9 @@ services:
   redis:
     image: redis
     restart: on-failure
-    command: "redis-server --requirepass ${REDIS_PASSWORD}"
+    command: "redis-server --requirepass ${REDIS_PASSWORD:-password}"
     ports:
-      - "6379:${REDIS_PORT}"
+      - "6379:${REDIS_PORT:-6379}"
     environment:
       REDIS_PORT: ${REDIS_PORT:-6379}
       REDIS_PASSWORD: ${REDIS_PASSWORD:-password}
@@ -30,8 +30,6 @@ services:
      build:
        context: ./back/
        dockerfile: Dockerfile.dev
-     env_file:
-       - .env
      ports:
        - "${APP_PORT:-3000}:${APP_PORT:-3000}"
      environment:
@@ -39,6 +37,7 @@ services:
        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
        POSTGRES_DB: ${POSTGRES_DB:-app}
        POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+       POSTGRES_HOST: ${POSTGRES_HOST:-db}
 
        STATIC_PATH: ${STATIC_PATH:-/static}
 
