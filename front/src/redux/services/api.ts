@@ -61,7 +61,14 @@ export const api = createApi({
 
 	baseQuery: baseQueryWithReauth,
 
-	tagTypes: ['Auth', 'User', 'Targets', 'CurrentObject', 'CurrentWorkingGroup'],
+	tagTypes: [
+		'Auth',
+		'User',
+		'Targets',
+		'Media',
+		'CurrentObject',
+		'CurrentWorkingGroup',
+	],
 
 	endpoints: () => ({}),
 });
