@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi_pagination import add_pagination
+from job import scheduler
 from starlette.middleware.cors import CORSMiddleware
 
 from core.config import get_settings
@@ -26,6 +27,8 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def on_start():
+    scheduler.start()
+    return
     await create_db_and_tables()
 
 
