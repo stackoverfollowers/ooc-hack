@@ -1,19 +1,20 @@
+import mimetypes
 import os.path
 import shutil
 import uuid
 from typing import Annotated
-import mimetypes
 
-from fastapi import APIRouter, File, UploadFile, Depends, Request, HTTPException
+from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 from starlette.responses import FileResponse
+
 from core.config import get_settings
 from db.engine import get_async_session
 from db.models import Content
-from dependencies import get_content_by_id, get_video, current_user
-from schemas.contents import ContentTypeEnum, ContentOut, ContentPut
+from dependencies import current_user, get_content_by_id, get_video
 from routers.utils import range_requests_response
+from schemas.contents import ContentOut, ContentPut, ContentTypeEnum
 
 router = APIRouter(dependencies=[Depends(current_user)])
 
@@ -22,8 +23,8 @@ settings = get_settings()
 
 @router.post("/", response_model=ContentOut)
 async def upload_content(
-        file: Annotated[UploadFile, File()],
-        session: AsyncSession = Depends(get_async_session)
+    file: Annotated[UploadFile, File()],
+    session: AsyncSession = Depends(get_async_session),
 ):
     if file.content_type.startswith("video/"):
         content_type = ContentTypeEnum.VIDEO
@@ -44,7 +45,7 @@ async def upload_content(
         path=str(file_path),
         type=content_type.value,
         task_id=None,
-        target_id=None
+        target_id=None,
     )
     session.add(content)
     await session.commit()
@@ -56,11 +57,12 @@ async def upload_content(
 async def download_file_by_id(content: Content = Depends(get_content_by_id)):
     if content.type != content.DOCUMENT:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Document not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Document not found"
         )
     content_type = mimetypes.guess_type(content.path)[0]
-    return FileResponse(content.path, status_code=200, filename=content.name, media_type=content_type)
+    return FileResponse(
+        content.path, status_code=200, filename=content.name, media_type=content_type
+    )
 
 
 @router.get("/{content_id}", response_model=ContentOut)
@@ -80,8 +82,8 @@ async def get_video(request: Request, video: Content = Depends(get_video)):
 
 @router.delete("/{content_id}")
 async def delete_content(
-        content: Content = Depends(get_content_by_id),
-        session: AsyncSession = Depends(get_async_session)
+    content: Content = Depends(get_content_by_id),
+    session: AsyncSession = Depends(get_async_session),
 ):
     await session.delete(content)
     if os.path.exists(path=content.path):
@@ -91,9 +93,9 @@ async def delete_content(
 
 @router.put("/{content_id}", response_model=ContentOut)
 async def edit_content(
-        file_data: ContentPut,
-        content: Content = Depends(get_content_by_id),
-        session: AsyncSession = Depends(get_async_session),
+    file_data: ContentPut,
+    content: Content = Depends(get_content_by_id),
+    session: AsyncSession = Depends(get_async_session),
 ):
     content.update_from_dict(**file_data.dict())
     session.add(content)

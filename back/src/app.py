@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from fastapi_pagination import add_pagination
+from job import scheduler
 from starlette.middleware.cors import CORSMiddleware
 
 from core.config import get_settings
 from core.user_manager import include_user_routers
 from db.utils import create_db_and_tables
-from job import scheduler
 from routers.api import api_router
 
 settings = get_settings()
