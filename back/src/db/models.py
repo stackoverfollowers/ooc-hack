@@ -122,11 +122,7 @@ class Field(Base, IdMixin):
     @declared_attr
     def section_id(cls) -> Mapped[int]:
         return mapped_column(
-<<<<<<< Updated upstream
-            Integer, ForeignKey("section.id", ondelete="cascade"), nullable=False
-=======
-         Integer, ForeignKey("section_field.id", ondelete="cascade"), nullable=False
->>>>>>> Stashed changes
+            Integer, ForeignKey("section_field.id", ondelete="cascade"), nullable=False
         )
 
     name: Mapped[str] = mapped_column(String(512), unique=True, index=True)
