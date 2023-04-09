@@ -3,7 +3,10 @@ import { api } from './api';
 export interface User {
 	id: number;
 	email: string;
-	role: string;
+	is_active: boolean;
+	is_superuser: boolean;
+	is_verified: boolean;
+	// role: string;
 }
 
 export const userApi = api.injectEndpoints({

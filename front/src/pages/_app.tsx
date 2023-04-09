@@ -105,7 +105,12 @@ function Auth({ children, roles }: { children: any; roles: string[] }) {
 		return null;
 	}
 
-	if (roles.length > 0 && (!user || !roles.includes(user.role))) {
+	// if (roles.length > 0 && (!user || !roles.includes(user.role))) {
+	// 	router.replace('/');
+	// 	return null;
+	// }
+
+	if (!user) {
 		router.replace('/');
 		return null;
 	}

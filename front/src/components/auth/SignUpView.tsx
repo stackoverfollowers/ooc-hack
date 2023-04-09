@@ -10,7 +10,7 @@ import {
 import { z } from 'zod';
 import { useForm, zodResolver } from '@mantine/form';
 import { useRouter } from 'next/router';
-import { useLoginMutation } from '@/redux/services/auth';
+import { useLoginMutation, useRegisterMutation } from '@/redux/services/auth';
 import { useState } from 'react';
 
 const schema = z.object({
@@ -23,7 +23,7 @@ const schema = z.object({
 const SignUpView = () => {
 	const router = useRouter();
 
-	const [login, { isLoading }] = useLoginMutation();
+	const [register, { isLoading }] = useRegisterMutation();
 
 	const [error, setError] = useState('');
 
@@ -34,7 +34,7 @@ const SignUpView = () => {
 
 	const handleSubmit = async (values: typeof form.values) => {
 		try {
-			await login(values);
+			await register(values);
 			router.replace('/');
 		} catch (error) {
 			console.log(error);
