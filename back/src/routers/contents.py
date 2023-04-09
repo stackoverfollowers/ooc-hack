@@ -1,20 +1,22 @@
 import os.path
 import shutil
 import uuid
+from pathlib import Path
 from typing import Annotated
 import mimetypes
 
-from fastapi import APIRouter, File, UploadFile, Depends, Request
+from fastapi import APIRouter, File, UploadFile, Depends, Request, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette import status
 from starlette.responses import FileResponse
 from core.config import get_settings
 from db.engine import get_async_session
 from db.models import Content
-from dependencies import get_content_by_id, get_video, get_target_contacts_by_id, get_task_contacts_by_id
+from dependencies import get_content_by_id, get_video, current_user
 from schemas.contents import ContentTypeEnum, ContentOut, ContentPut, FilteredContents
 from utils import range_requests_response
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(current_user)])
 
 settings = get_settings()
 
@@ -24,13 +26,16 @@ async def upload_content(
         file: Annotated[UploadFile, File()],
         session: AsyncSession = Depends(get_async_session)
 ):
-    file_path = settings.STATIC_PATH / f"{uuid.uuid4()}_{file.filename}"
     if file.content_type.startswith("video/"):
         content_type = ContentTypeEnum.VIDEO
+        start_path = settings.STATIC_PATH / "videos"
     elif file.content_type.startswith("image/"):
         content_type = ContentTypeEnum.IMAGE
+        start_path = settings.STATIC_PATH / "images"
     else:
         content_type = ContentTypeEnum.DOCUMENT
+        start_path = settings.STATIC_PATH / "docs"
+    file_path = start_path / f"{uuid.uuid4()}_{file.filename}"
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
@@ -48,25 +53,20 @@ async def upload_content(
     return content
 
 
-@router.get("/{content_id}")
+@router.get("/{content_id}/download", response_class=FileResponse)
 async def download_file_by_id(content: Content = Depends(get_content_by_id)):
+    if content.type != content.DOCUMENT:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Document not found"
+        )
     content_type = mimetypes.guess_type(content.path)[0]
     return FileResponse(content.path, status_code=200, filename=content.name, media_type=content_type)
 
 
-@router.get("/{content_id}/data", response_model=ContentOut)
+@router.get("/{content_id}", response_model=ContentOut)
 async def get_content_data(content: Content = Depends(get_content_by_id)):
     return content
-
-
-@router.get("/target/{target_id}/", response_model=FilteredContents)
-async def get_target_contents(contents: list[Content] = Depends(get_target_contacts_by_id)):
-    return contents
-
-
-@router.get("/task/{task_id}/", response_model=FilteredContents)
-async def get_task_contents(contents: list[Content] = Depends(get_task_contacts_by_id)):
-    return contents
 
 
 @router.get("/{content_id}/stream")

@@ -37,5 +37,3 @@ include_user_routers(app)
 app.include_router(api_router)
 
 add_pagination(app)
-
-app.mount(str(settings.STATIC_PATH), StaticFiles(directory=settings.STATIC_PATH), name="static")
