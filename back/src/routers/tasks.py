@@ -3,12 +3,12 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
 
 from crud.base import CRUDBase
+from crud.tasks import tasks_crud
 from db.engine import get_async_session
 from db.models import Task, User
-from dependencies import get_task_by_id, get_task_by_name_and_desc, current_active_user
+from dependencies import get_task_by_id, current_active_user
 from schemas.task import TaskSchema, TaskCreate, TaskUpdate
 
 router = APIRouter()
@@ -17,31 +17,20 @@ crud = CRUDBase(Task)
 
 @router.get("/", response_model=List[TaskSchema])
 async def get_tasks(session: AsyncSession = Depends(get_async_session)) -> List[Task]:
-    tasks = await session.execute(select(Task))
-    return tasks.scalars().all()
+    tasks = await tasks_crud.get_multi(db=session)
+    return tasks
 
 
 @router.post("/", response_model=TaskSchema, status_code=201)
-async def create_task(task: TaskCreate,
+async def create_task(task_form: TaskCreate,
                       user: User = Depends(current_active_user),
                       session: AsyncSession = Depends(get_async_session)
                       ) -> Task:
-    db_task = get_task_by_name_and_desc(Task, task.name)
-    if db_task:
-        raise HTTPException(status_code=400, detail="Task already registered")
-
-    new_task = Task(
-        author_id=user.id,
-        executor_id=task.executor_id,
-        target_id=task.target_id,
-        name=task.name,
-        description=task.description,
-        deadline=task.deadline,
-        status=task.status
+    return await tasks_crud.create_and_check_by_name_and_desk(
+        task_form=task_form,
+        session=session,
+        user=user
     )
-    session.add(new_task)
-    await session.commit()
-    return new_task
 
 
 @router.get("/{task_id}", response_model=TaskSchema)

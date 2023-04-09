@@ -1,26 +1,30 @@
+from enum import Enum
 from typing import Any
 
 from core.schemas import BaseModel
 
 
+class FieldTypeEnum(Enum):
+    INTEGER, FLOAT, STRING, ARRAY = "INTEGER", "FLOAT", "STRING", "ARRAY"
+
+
 class FieldBase(BaseModel):
-    type_id: int
-    section_id: int
-
-
-class FieldCreate(BaseModel):
-    type_id: int
-    section_id: int
-
-
-class FieldUpdate(BaseModel):
-    type_id: int
-    section_id: int
-
-
-class FieldSchema(BaseModel):
     name: str
-    value: Any
-    field_type_id: int
-    is_required: bool | None
-    default_value: Any | None
+    is_required: bool = False
+    field_type: FieldTypeEnum
+    default_value: Any
+    type_id: int
+    section_id: int
+
+
+class FieldCreate(FieldBase):
+    ...
+
+
+class FieldUpdate(FieldBase):
+    ...
+
+
+class FieldSchema(FieldBase):
+    id: int
+    ...

@@ -14,6 +14,7 @@ class StatusUpdate(StatusBase):
 
 
 class StatusSchema(StatusBase):
+    id: int
 
     class Config:
         orm_mode = True

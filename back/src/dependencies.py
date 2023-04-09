@@ -1,11 +1,14 @@
-from select import select
+from sqlalchemy import select
 
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.user_manager import fastapi_users
+from crud.statuses import statuses_crud
+from crud.target_types import target_type_crud
+from crud.tasks import tasks_crud
 from db.engine import get_async_session
-from db.models import Task
+from db.models import Task, Status
 
 current_active_user = fastapi_users.current_user(active=True)
 current_super_user = fastapi_users.current_user(superuser=True)
@@ -23,7 +26,7 @@ async def get_target_by_id(task_id: int, session: AsyncSession = Depends(get_asy
 
 
 async def get_task_by_id(task_id: int, session: AsyncSession = Depends(get_async_session)) -> Task:
-    task = await session.get(Task, task_id)
+    task = await tasks_crud.get(db=session, pk=task_id)
     if task is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Task not found!"
@@ -31,42 +34,21 @@ async def get_task_by_id(task_id: int, session: AsyncSession = Depends(get_async
     return task
 
 
-async def get_task_by_name_and_desc(target_id: int,
-                                    name: str,
-                                    description: str,
-                                    session: AsyncSession = Depends(get_async_session)) -> Task:
-    stmt = select(Task).where(Task.name == name) \
-        .where(Task.description == description) \
-        .where(Task.target_id == target_id)
-    task = await session.execute(stmt)
-    if task is None:
+async def get_status_by_id(status_id: int, session: AsyncSession = Depends(get_async_session)) -> Status:
+    db_status = await statuses_crud.get(session, status_id)
+    if db_status is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Task not found!"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Status not found"
         )
-    return task
+    return db_status
 
-# async def get_post(post_id: int, db: AsyncSession = Depends(get_async_session)) -> Post:
-#     post = await db.get(Post, post_id)
-#     if post is None:
-#         raise HTTPException(
-#             status_code=status.HTTP_404_NOT_FOUND, detail="Post not found!"
-#         )
-#     return post
-#
-#
-# async def get_post_as_owner(
-#     post_id: int,
-#     db: AsyncSession = Depends(get_async_session),
-#     user=Depends(current_active_user),
-# ):
-#     post = await db.get(Post, post_id)
-#     if post is None:
-#         raise HTTPException(
-#             status_code=status.HTTP_404_NOT_FOUND, detail="Post not found!"
-#         )
-#     if not (post.user_id == user.id or user.is_superuser):
-#         raise HTTPException(
-#             status_code=status.HTTP_403_FORBIDDEN,
-#             detail="You have no power!",
-#         )
-#     return post
+
+async def get_target_type_by_id(target_type_id: int, session: AsyncSession = Depends(get_async_session)) -> Status:
+    target_type = await target_type_crud.get(session, target_type_id)
+    if target_type is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Target type not found"
+        )
+    return target_type

@@ -1,13 +1,13 @@
 from typing import List, Optional, Union
 
 from core.schemas import BaseModel
-from schemas.field import FieldSchema
+from schemas.field import FieldSchema, FieldCreate
 
 
 class TargetBase(BaseModel):
+    name: str
     status_id: int
     target_type_id: int
-    work_group_id: int
     address: str
     area: str
     district: str
@@ -15,7 +15,7 @@ class TargetBase(BaseModel):
 
 
 class TargetCreate(TargetBase):
-    fields: Optional[List[FieldSchema]]
+    fields: Optional[List[FieldCreate]]
 
 
 class TargetUpdate(TargetCreate):

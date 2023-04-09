@@ -1,3 +1,5 @@
+from typing import Optional
+
 from core.schemas import BaseModel
 from datetime import datetime
 from enum import Enum
@@ -21,6 +23,7 @@ class TaskBase(BaseModel):
 
 class TaskCreate(TaskBase):
     status: TaskStatusEnum | None
+    contents: Optional[list[int]]
 
 
 class TaskUpdate(TaskCreate):

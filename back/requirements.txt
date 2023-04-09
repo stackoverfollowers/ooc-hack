@@ -1,8 +1,5 @@
-<<<<<<< Updated upstream
 alembic==1.10.3
 anyio==3.6.2
-=======
->>>>>>> Stashed changes
 async-timeout==4.0.2
 asyncpg==0.27.0
 attrs==22.2.0

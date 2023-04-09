@@ -62,6 +62,12 @@ class User(IdMixin, TimestampMixin, SQLAlchemyBaseUserTable[int], Base):
     )
 
     targets: Mapped[list[Target]] = relationship(back_populates="user")
+    authored_tasks: Mapped[list[Task]] = relationship(
+        "Task", back_populates="author", foreign_keys="Task.author_id"
+    )
+    executed_tasks: Mapped[list[Task]] = relationship(
+        "Task", back_populates="executor", foreign_keys="Task.executor_id"
+    )
 
     def __repr__(self):
         return f"<User {self.email}>"
@@ -89,6 +95,7 @@ class TargetType(Base, IdMixin):
         secondary=workgroup_target_type, back_populates="target_types"
     )
     targets: Mapped[list[Target]] = relationship(back_populates="target_type")
+    fields: Mapped[list[Field]] = relationship(back_populates="target_type")
 
     def __repr__(self) -> str:
         return f"<TargetType '{self.name}'>"
@@ -122,7 +129,7 @@ class Field(Base, IdMixin):
     @declared_attr
     def section_id(cls) -> Mapped[int]:
         return mapped_column(
-            Integer, ForeignKey("section_field.id", ondelete="cascade"), nullable=False
+            Integer, ForeignKey("section.id", ondelete="cascade"), nullable=False
         )
 
     name: Mapped[str] = mapped_column(String(512), unique=True, index=True)
@@ -135,6 +142,7 @@ class Field(Base, IdMixin):
 
     section: Mapped[Section] = relationship(back_populates="fields")
     target_type: Mapped[TargetType] = relationship(back_populates="fields")
+    target_fields: Mapped[list[TargetField]] = relationship(back_populates="field")
 
     def __repr__(self) -> str:
         return f"<Field '{self.name}'>"
@@ -174,6 +182,8 @@ class Target(TimestampMixin, UserIdMixin, Base, IdMixin):
     target_type: Mapped[TargetType] = relationship(back_populates="targets")
     status: Mapped[Status] = relationship(back_populates="targets")
     contents: Mapped[list[Content]] = relationship(back_populates="target")
+    target_fields: Mapped[list[TargetField]] = relationship(back_populates="target")
+    tasks: Mapped[list[Task]] = relationship(back_populates="target")
 
     def __repr__(self) -> str:
         return f"<Target '{self.name}'>"
@@ -247,10 +257,10 @@ class Task(IdMixin, Base):
     )
 
     author: Mapped[User] = relationship(
-        back_populates="authored_tasks", foreign_keys=[author_id]
+        back_populates="authored_tasks", foreign_keys="Task.author_id"
     )
     executor: Mapped[User] = relationship(
-        back_populates="executed_tasks", foreign_keys=[executor_id]
+        back_populates="executed_tasks", foreign_keys="Task.executor_id"
     )
     target: Mapped[Target] = relationship(back_populates="tasks")
     contents: Mapped[list[Content]] = relationship(back_populates="task")
@@ -270,7 +280,7 @@ class Content(Base, IdMixin):
     def target_id(cls) -> Mapped[int]:
         return mapped_column(
             Integer,
-            ForeignKey("target.id", ondelete="setnull"),
+            ForeignKey("target.id", ondelete="cascade"),
             nullable=True,
         )
 
@@ -278,7 +288,7 @@ class Content(Base, IdMixin):
     def task_id(cls) -> Mapped[int]:
         return mapped_column(
             Integer,
-            ForeignKey("task.id", ondelete="setnull"),
+            ForeignKey("task.id", ondelete="cascade"),
             nullable=True,
         )
 

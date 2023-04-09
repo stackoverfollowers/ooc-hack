@@ -4,13 +4,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud.base import CRUDBase
+from crud.target import target_crud
 from db.engine import get_async_session
 from db.models import Target
 from schemas.target import TargetCreate, TargetUpdate, TargetSchema
 
 router = APIRouter()
-
-target_crud = CRUDBase(Target)
 
 
 @router.post("/", response_model=TargetSchema)
