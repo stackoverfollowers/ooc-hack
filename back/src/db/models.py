@@ -89,6 +89,7 @@ class TargetType(Base, IdMixin):
         secondary=workgroup_target_type, back_populates="target_types"
     )
     targets: Mapped[list[Target]] = relationship(back_populates="target_type")
+    fields: Mapped[list[Field]] = relationship(back_populates="target_type")
 
     def __repr__(self) -> str:
         return f"<TargetType '{self.name}'>"
@@ -135,6 +136,7 @@ class Field(Base, IdMixin):
 
     section: Mapped[Section] = relationship(back_populates="fields")
     target_type: Mapped[TargetType] = relationship(back_populates="fields")
+    target_fields: Mapped[list[TargetField]] = relationship(back_populates="field")
 
     def __repr__(self) -> str:
         return f"<Field '{self.name}'>"
@@ -174,6 +176,7 @@ class Target(TimestampMixin, UserIdMixin, Base, IdMixin):
     target_type: Mapped[TargetType] = relationship(back_populates="targets")
     status: Mapped[Status] = relationship(back_populates="targets")
     contents: Mapped[list[Content]] = relationship(back_populates="target")
+    target_fields: Mapped[list[TargetField]] = relationship(back_populates="target")
 
     def __repr__(self) -> str:
         return f"<Target '{self.name}'>"
