@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi_pagination import add_pagination
 from starlette.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 
 from core.config import get_settings
 from core.user_manager import include_user_routers

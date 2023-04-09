@@ -1,11 +1,9 @@
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
-from sqlalchemy import join
 
 from core.user_manager import fastapi_users
 from db.engine import get_async_session
-from db.models import Content, Target, Task
+from db.models import Content
 
 current_user = fastapi_users.current_user()
 current_active_user = fastapi_users.current_user(active=True)

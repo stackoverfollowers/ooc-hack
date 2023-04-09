@@ -1,7 +1,6 @@
 import os.path
 import shutil
 import uuid
-from pathlib import Path
 from typing import Annotated
 import mimetypes
 
@@ -13,8 +12,8 @@ from core.config import get_settings
 from db.engine import get_async_session
 from db.models import Content
 from dependencies import get_content_by_id, get_video, current_user
-from schemas.contents import ContentTypeEnum, ContentOut, ContentPut, FilteredContents
-from utils import range_requests_response
+from schemas.contents import ContentTypeEnum, ContentOut, ContentPut
+from routers.utils import range_requests_response
 
 router = APIRouter(dependencies=[Depends(current_user)])
 

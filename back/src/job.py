@@ -24,7 +24,7 @@ async def check_content():
                 os.remove(content.path)
             await conn.delete(content)
             await conn.commit()
-            logger.info(f"Content {content.id} with name {content.name} deleted")
+            logger.info("Content %s with name %s deleted", content.id, content.name)
 
 
 scheduler = AsyncIOScheduler()
