@@ -5,7 +5,6 @@ from starlette.middleware.cors import CORSMiddleware
 
 from core.config import get_settings
 from core.user_manager import include_user_routers
-from db.utils import create_db_and_tables
 from routers.api import api_router
 
 settings = get_settings()
@@ -28,8 +27,6 @@ app.add_middleware(
 @app.on_event("startup")
 async def on_start():
     scheduler.start()
-    return
-    await create_db_and_tables()
 
 
 include_user_routers(app)

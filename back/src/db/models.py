@@ -62,6 +62,12 @@ class User(IdMixin, TimestampMixin, SQLAlchemyBaseUserTable[int], Base):
     )
 
     targets: Mapped[list[Target]] = relationship(back_populates="user")
+    authored_tasks: Mapped[list[Task]] = relationship(
+        "Task", back_populates="author", foreign_keys="Task.author_id"
+    )
+    executed_tasks: Mapped[list[Task]] = relationship(
+        "Task", back_populates="executor", foreign_keys="Task.executor_id"
+    )
 
     def __repr__(self):
         return f"<User {self.email}>"
@@ -177,6 +183,7 @@ class Target(TimestampMixin, UserIdMixin, Base, IdMixin):
     status: Mapped[Status] = relationship(back_populates="targets")
     contents: Mapped[list[Content]] = relationship(back_populates="target")
     target_fields: Mapped[list[TargetField]] = relationship(back_populates="target")
+    tasks: Mapped[list[Task]] = relationship(back_populates="target")
 
     def __repr__(self) -> str:
         return f"<Target '{self.name}'>"
@@ -250,10 +257,10 @@ class Task(IdMixin, Base):
     )
 
     author: Mapped[User] = relationship(
-        back_populates="authored_tasks", foreign_keys=[author_id]
+        back_populates="authored_tasks", foreign_keys="Task.author_id"
     )
     executor: Mapped[User] = relationship(
-        back_populates="executed_tasks", foreign_keys=[executor_id]
+        back_populates="executed_tasks", foreign_keys="Task.executor_id"
     )
     target: Mapped[Target] = relationship(back_populates="tasks")
     contents: Mapped[list[Content]] = relationship(back_populates="task")
