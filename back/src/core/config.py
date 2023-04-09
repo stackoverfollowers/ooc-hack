@@ -1,5 +1,6 @@
 import os
 from functools import lru_cache
+from pathlib import Path
 from typing import Any
 
 from pydantic import BaseSettings, Field, PostgresDsn, RedisDsn, validator
@@ -53,6 +54,12 @@ class AppSettings(BaseSettings):
             password=values.get("REDIS_PASSWORD"),
             path="/1",
         )
+
+    STATIC_PATH: Path
+
+    @validator("STATIC_PATH")
+    def validate_path(cls, v):
+        return Path(v)
 
 
 def _get_settings(env_file: str | None = ".env"):
