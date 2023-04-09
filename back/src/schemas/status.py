@@ -14,6 +14,6 @@ class StatusUpdate(StatusBase):
 
 
 class StatusSchema(StatusBase):
-    targets:
+
     class Config:
         orm_mode = True
