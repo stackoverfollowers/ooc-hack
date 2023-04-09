@@ -35,6 +35,6 @@ BoardPage.getLayout = function getLayout(page: ReactElement) {
 	return <DashboardLayout sidebar>{page}</DashboardLayout>;
 };
 
-BoardPage.auth = true;
+BoardPage.auth = false;
 
 export default BoardPage;

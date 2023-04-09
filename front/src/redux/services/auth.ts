@@ -8,7 +8,7 @@ export type AuthResponse = {
 };
 
 export interface AuthRequest {
-	email: string;
+	username: string;
 	password: string;
 }
 
@@ -16,7 +16,7 @@ export const authApi = api.injectEndpoints({
 	endpoints: build => ({
 		login: build.mutation<AuthResponse, AuthRequest>({
 			query: credentials => ({
-				url: '/login',
+				url: '/auth/jwt/login',
 				method: 'POST',
 				body: credentials,
 			}),

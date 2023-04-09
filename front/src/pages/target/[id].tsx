@@ -27,6 +27,6 @@ TargetPage.getLayout = function getLayout(page: ReactElement) {
 	return <DashboardLayout>{page}</DashboardLayout>;
 };
 
-TargetPage.auth = true;
+TargetPage.auth = false;
 
 export default TargetPage;

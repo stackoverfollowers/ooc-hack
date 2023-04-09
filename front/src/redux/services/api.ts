@@ -31,7 +31,7 @@ const baseQueryWithReauth: BaseQueryFn<
 		// try to get a new token
 		const refreshResult = (await baseQuery(
 			{
-				url: '/refresh',
+				url: '/auth/request-verify-token',
 				headers: {
 					Authorization: `Bearer ${
 						(api.getState() as RootState).auth.refreshToken
