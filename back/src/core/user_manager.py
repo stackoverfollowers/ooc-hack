@@ -9,7 +9,7 @@ from fastapi_users import (
 from fastapi_users.db import SQLAlchemyUserDatabase
 from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from fastapi_users.schemas import BaseOAuthAccount
 from core.auth import auth_backend
 from core.config import get_settings
 from core.schemas import BaseModel
@@ -41,7 +41,7 @@ class UserUpdate(schemas.BaseUserCreate):
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
-    yield SQLAlchemyUserDatabase(session, User, OAuthAccount)
+    yield SQLAlchemyUserDatabase(session, User, BaseOAuthAccount)
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):

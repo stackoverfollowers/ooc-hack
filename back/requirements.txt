@@ -1,5 +1,8 @@
+<<<<<<< Updated upstream
 alembic==1.10.3
 anyio==3.6.2
+=======
+>>>>>>> Stashed changes
 async-timeout==4.0.2
 asyncpg==0.27.0
 attrs==22.2.0
@@ -60,3 +63,5 @@ tomli==2.0.1
 typing_extensions==4.5.0
 uvicorn==0.21.1
 virtualenv==20.21.0
+alembic==1.10.3
+SQLAlchemy-Utils==0.40.0

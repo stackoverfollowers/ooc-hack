@@ -24,9 +24,10 @@ app.add_middleware(
 )
 
 
-@app.on_event("startup")
-async def on_start():
-    await create_db_and_tables()
+# @app.on_event("startup")
+# async def on_start():
+#     ...
+#     # await create_db_and_tables()
 
 
 include_user_routers(app)

@@ -122,7 +122,11 @@ class Field(Base, IdMixin):
     @declared_attr
     def section_id(cls) -> Mapped[int]:
         return mapped_column(
+<<<<<<< Updated upstream
             Integer, ForeignKey("section.id", ondelete="cascade"), nullable=False
+=======
+         Integer, ForeignKey("section_field.id", ondelete="cascade"), nullable=False
+>>>>>>> Stashed changes
         )
 
     name: Mapped[str] = mapped_column(String(512), unique=True, index=True)
@@ -270,7 +274,7 @@ class Content(Base, IdMixin):
     def target_id(cls) -> Mapped[int]:
         return mapped_column(
             Integer,
-            ForeignKey("target.id", ondelete="cascade"),
+            ForeignKey("target.id", ondelete="setnull"),
             nullable=True,
         )
 
@@ -278,7 +282,7 @@ class Content(Base, IdMixin):
     def task_id(cls) -> Mapped[int]:
         return mapped_column(
             Integer,
-            ForeignKey("task.id", ondelete="cascade"),
+            ForeignKey("task.id", ondelete="setnull"),
             nullable=True,
         )
 
