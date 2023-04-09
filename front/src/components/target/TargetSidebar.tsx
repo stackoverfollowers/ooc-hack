@@ -8,7 +8,7 @@ import {
 	FiTag,
 } from 'react-icons/fi';
 import TargetAddMembers from './TargetAddMember';
-import TargetAddCustomFields from '@/components/target/TargerAddCustomFields';
+import TargetAddCustomFields from '@/components/target/TargetAddCustomFields';
 import TargetAddDate from '@/components/target/TargetAddDate';
 import TargetAddLocation from '@/components/target/TargetAddLocation';
 
