@@ -1,7 +1,8 @@
 from typing import List, Optional, Union
 
 from core.schemas import BaseModel
-from schemas.field import FieldSchema, FieldCreate
+from schemas.field import FieldSchema
+from schemas.section import SectionCreate
 
 
 class TargetBase(BaseModel):
@@ -15,7 +16,7 @@ class TargetBase(BaseModel):
 
 
 class TargetCreate(TargetBase):
-    fields: Optional[List[FieldCreate]]
+    fields: Optional[List[SectionCreate]]
 
 
 class TargetUpdate(TargetCreate):
@@ -23,8 +24,8 @@ class TargetUpdate(TargetCreate):
 
 
 class TargetSchema(TargetBase):
-    target_type_id: int
-    status_id: int
+
+    fields: list[FieldSchema]
 
     class Config:
         orm_mode = True

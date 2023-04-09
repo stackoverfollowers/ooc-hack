@@ -5,8 +5,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud.base import CRUDBase
 from crud.target import target_crud
+from db import User
 from db.engine import get_async_session
 from db.models import Target
+from dependencies import current_active_user
 from schemas.target import TargetCreate, TargetUpdate, TargetSchema
 
 router = APIRouter()
@@ -15,8 +17,9 @@ router = APIRouter()
 @router.post("/", response_model=TargetSchema)
 async def create_target(target_in: TargetCreate,
                         session: AsyncSession = Depends(get_async_session),
+                        user: User = Depends(current_active_user)
                         ) -> TargetSchema:
-    return await target_crud.create(db=session, obj_in=target_in)
+    return await target_crud.create_with_user(db=session, obj_in=target_in, user=user)
 
 
 @router.get("/", response_model=List[TargetSchema])

@@ -1,27 +1,24 @@
 from typing import List
 
 from core.schemas import BaseModel
-from schemas.field import FieldSchema
+from schemas.field import FieldSchema, FieldCreate
 
 
 class SectionBase(BaseModel):
     name: str
-    weight: int | None
-    fields: List[FieldSchema]
+    fields: List[FieldCreate]
 
-    class Config:
-        orm_mode = True
 
 class SectionCreate(SectionBase):
-    ...
+    fields: List[FieldCreate]
+
 
 class SectionUpdate(SectionBase):
-    name: str
-    weight: int | None
-    fields: List[FieldSchema]
+    ...
 
 
 class SectionSchema(SectionBase):
+    fields: List[FieldCreate]
 
     class Config:
         orm_mode = True
