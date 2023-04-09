@@ -10,6 +10,7 @@ from starlette import status
 from starlette.responses import FileResponse
 
 from core.config import get_settings
+from crud.content import content_crud
 from db.engine import get_async_session
 from db.models import Content
 from dependencies import current_active_user, get_content_by_id, get_video
@@ -93,11 +94,9 @@ async def delete_content(
 
 @router.put("/{content_id}", response_model=ContentOut)
 async def edit_content(
-    file_data: ContentPut,
+    content_in: ContentPut,
     content: Content = Depends(get_content_by_id),
     session: AsyncSession = Depends(get_async_session),
 ):
-    content.update_from_dict(**file_data.dict())
-    session.add(content)
-    await session.commit()
+    await content_crud.update(db=session, db_obj=content, obj_in=content_in)
     return content

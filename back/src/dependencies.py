@@ -2,6 +2,7 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.user_manager import fastapi_users
+from crud.content import content_crud
 from db.engine import get_async_session
 from db.models import Content
 
@@ -14,7 +15,7 @@ optional_current_user = fastapi_users.current_user(optional=True, active=True)
 async def get_content_by_id(
     content_id: int, session: AsyncSession = Depends(get_async_session)
 ) -> Content:
-    content = await session.get(Content, content_id)
+    content = await content_crud.get(session, content_id)
     if content is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
