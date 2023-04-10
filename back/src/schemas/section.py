@@ -18,7 +18,6 @@ class SectionUpdate(SectionBase):
 
 
 class SectionSchema(SectionBase):
-    fields: List[FieldCreate]
 
     class Config:
         orm_mode = True

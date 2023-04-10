@@ -12,7 +12,7 @@ from schemas.target import TargetCreate, TargetUpdate
 class TargetCRUD(CRUDBase[Target, TargetCreate, TargetUpdate]):
 
     async def create_with_user(self, db: AsyncSession, target_form: TargetCreate, user: User) -> Target:
-        fields = target_form.fields
+        sections = target_form.sections
         target = Target(
             name=target_form.name,
             status_id=target_form.status_id,
@@ -21,9 +21,10 @@ class TargetCRUD(CRUDBase[Target, TargetCreate, TargetUpdate]):
             area=target_form.area,
             district=target_form.district,
             square=target_form.square,
-            user_id=user.id
+            user_id=user.id,
+
         )
-        for _section in fields:
+        for _section in sections:
             q = select(Section).filter_by(name=_section.name)
             section = (await db.execute(q)).scalars().first()
             if section is None:
@@ -44,6 +45,7 @@ class TargetCRUD(CRUDBase[Target, TargetCreate, TargetUpdate]):
                     field_type=_field.field_type.value,
                     default_value=_field.default_value
                 )
+
                 db.add(field)
                 await db.commit()
                 await db.refresh(field)
@@ -52,8 +54,6 @@ class TargetCRUD(CRUDBase[Target, TargetCreate, TargetUpdate]):
         await db.commit()
         await db.refresh(target)
         return target
-
-
 
 
 target_crud = TargetCRUD(Target)

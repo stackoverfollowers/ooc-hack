@@ -41,7 +41,7 @@ async def get_task(task: Task = Depends(get_task_by_id)) -> Task:
 @router.delete("/{task_id}")
 async def delete_task(task: Task = Depends(get_task_by_id),
                       session: AsyncSession = Depends(get_async_session)):
-    session.delete(task)
+    await session.delete(task)
     await session.commit()
     return Response(status_code=204)
 
