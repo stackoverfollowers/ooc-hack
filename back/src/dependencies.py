@@ -2,12 +2,15 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.user_manager import fastapi_users
+
 from crud.statuses import statuses_crud
 from crud.target_types import target_type_crud
 from crud.tasks import tasks_crud
 from crud.workgroups import wg_crud
+from crud.content import content_crud
 from db.engine import get_async_session
-from db.models import Task, Status, Workgroup
+from db.models import Task, Status, Workgroup, Content
+
 
 current_active_user = fastapi_users.current_user(active=True)
 current_super_user = fastapi_users.current_user(superuser=True)
@@ -61,3 +64,22 @@ async def get_workgroup_by_id(workgroup_id: int, session: AsyncSession = Depends
             detail="Workgroup not found"
         )
     return workgroup
+
+async def get_content_by_id(
+    content_id: int, session: AsyncSession = Depends(get_async_session)
+) -> Content:
+    content = await content_crud.get(session, content_id)
+    if content is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
+        )
+    return content
+
+
+async def get_video(content: Content = Depends(get_content_by_id)):
+    if content.type != content.VIDEO:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Video not found"
+        )
+    return content
+
