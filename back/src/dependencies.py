@@ -1,5 +1,3 @@
-from sqlalchemy import select
-
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -7,8 +5,9 @@ from core.user_manager import fastapi_users
 from crud.statuses import statuses_crud
 from crud.target_types import target_type_crud
 from crud.tasks import tasks_crud
+from crud.workgroups import wg_crud
 from db.engine import get_async_session
-from db.models import Task, Status
+from db.models import Task, Status, Workgroup
 
 current_active_user = fastapi_users.current_user(active=True)
 current_super_user = fastapi_users.current_user(superuser=True)
@@ -52,3 +51,13 @@ async def get_target_type_by_id(target_type_id: int, session: AsyncSession = Dep
             detail="Target type not found"
         )
     return target_type
+
+
+async def get_workgroup_by_id(workgroup_id: int, session: AsyncSession = Depends(get_async_session)) -> Workgroup:
+    workgroup = await wg_crud.get(session, workgroup_id)
+    if workgroup is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Workgroup not found"
+        )
+    return workgroup
