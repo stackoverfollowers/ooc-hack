@@ -10,7 +10,7 @@ from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users.schemas import BaseOAuthAccount
 from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from fastapi_users.schemas import BaseOAuthAccount
 from core.auth import auth_backend
 from core.config import get_settings
 from core.schemas import BaseModel

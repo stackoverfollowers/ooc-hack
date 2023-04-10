@@ -65,3 +65,5 @@ tzdata==2023.3
 tzlocal==4.3
 uvicorn==0.21.1
 virtualenv==20.21.0
+alembic==1.10.3
+SQLAlchemy-Utils==0.40.0
